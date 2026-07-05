@@ -45,6 +45,18 @@ Generate executive summaries and extract key contract metadata using Gemini.
 
 # 1. Project Overview
 
+## Evolution
+
+The project idea has evolved from sprint 3.
+
+Originally it was:
+
+Upload PDF → Ask Gemini
+
+Now it's:
+
+Build a structured knowledge repository from contracts and place an AI assistant on top of it.
+
 ## Project Name
 
 DecisionIQ
@@ -55,11 +67,7 @@ AI-Powered Contract Intelligence & Decision Support Platform
 
 ## Elevator Pitch
 
-DecisionIQ is an AI-powered decision intelligence platform that helps organizations analyze commercial documents, identify risks, extract key business information, and recommend actions.
-
-Instead of simply answering questions about contracts, DecisionIQ provides actionable business recommendations that support faster and better decision making.
-
-The MVP focuses on Contract Intelligence while keeping the architecture flexible enough to support Procurement, Compliance and other document types in the future.
+DecisionIQ is an AI-powered Decision Intelligence platform that ingests commercial documents, extracts structured business knowledge, stores it in a centralized repository, and provides an intelligent assistant capable of answering questions about individual contracts as well as the entire contract portfolio.
 
 ---
 
@@ -83,7 +91,7 @@ DecisionIQ uses Generative AI to automatically analyze these documents and provi
 
 # 3. Vision
 
-Build an enterprise-style AI application that demonstrates how Generative AI supports business decisions rather than simply acting as a chatbot.
+Build an enterprise-style AI Decision Intelligence platform that combines structured contract data with Generative AI to support both document-level and repository-level business decisions. The platform should intelligently decide when to answer using stored metadata, database queries, or AI reasoning, rather than relying solely on an LLM.
 
 The application should be
 
@@ -146,6 +154,11 @@ This project is not only a hackathon submission but also a learning journey.
 
 Design decisions should favor understanding and long-term maintainability over short-term shortcuts.
 
+
+### 6. Use AI Only Where It Adds Value
+
+DecisionIQ should prefer structured data and deterministic business logic whenever possible. Generative AI should be used primarily for reasoning, summarization, comparison, and explanation rather than simple data retrieval.
+
 ---
 
 # 5. MVP Scope
@@ -205,49 +218,35 @@ Design decisions should favor understanding and long-term maintainability over s
 
 # 6. User Journey
 
-```
-User opens application
+Upload Document
 
 ↓
 
-Uploads one or more documents
+Extract Text
 
 ↓
 
-Document text extracted
+Generate AI Analysis
 
 ↓
 
-Gemini analyzes document
+Store in SQLite
 
 ↓
 
-Information stored
+Open Document Details
 
 ↓
 
-Dashboard updated
+Ask AI About Document
 
 ↓
 
-User opens document
+Ask AI About Repository
 
 ↓
 
-AI Analysis displayed
-
-↓
-
-User asks questions
-
-↓
-
-AI answers using document context
-
-↓
-
-AI recommends actions
-```
+Receive Decision Support
 
 ---
 
@@ -276,14 +275,27 @@ AI recommends actions
 
  Document Parser              SQLite Database
 
+        │                           ▲
         │                           │
-
         └─────────────┬─────────────┘
-
+                      │
                       ▼
 
-                 Gemini API
+                Gemini API
 
+                      │
+                      ▼
+
+        AI Assistant / Decision Layer
+
+        ┌─────────────┼─────────────┐
+        │             │             │
+        ▼             ▼             ▼
+
+ Document AI    Repository AI   Decision Support
+
+        │             │             │
+        └─────────────┼─────────────┘
                       ▼
 
       Summary
@@ -294,8 +306,50 @@ AI recommends actions
 
       Recommendations
 
-      Chat Responses
+      Decision Support
+
+      AI Chat
 ```
+
+## AI Assistant Workflow
+# 15. AI Assistant Workflow
+
+DecisionIQ intelligently routes user questions to the most appropriate processing method instead of sending every request directly to Gemini.
+
+```
+                    User Question
+                           │
+                           ▼
+                    Intent Routing
+                           │
+          ┌────────────────┼────────────────┐
+          │                │                │
+          ▼                ▼                ▼
+   Document Query   Repository Query   AI Reasoning
+          │                │                │
+          ▼                ▼                ▼
+     Gemini API      SQLite Database    Gemini API
+          │                │                │
+          └────────────────┼────────────────┘
+                           ▼
+                     Final Response
+```
+
+### Query Types
+
+- **Document Query**
+  - Questions about a single uploaded document.
+  - Example: *"Summarize the termination clause."*
+
+- **Repository Query**
+  - Questions spanning multiple uploaded documents.
+  - Example: *"Show contracts expiring this month."*
+
+- **AI Reasoning**
+  - Business analysis requiring reasoning across one or more contracts.
+  - Example: *"Which contracts present the highest business risk?"*
+
+This architecture allows DecisionIQ to combine structured database queries with Gemini's reasoning capabilities, improving accuracy, reducing unnecessary AI calls, and providing enterprise-style decision support.
 
 ---
 
@@ -434,6 +488,9 @@ Allows users to ask questions about uploaded documents.
 |--------|------|
 | id | Integer |
 | filename | Text |
+| file_type | Text |
+| page_count | Integer |
+| raw_text | Text |
 | summary | Text |
 | metadata | JSON |
 | risks | JSON |
@@ -483,11 +540,20 @@ Example
 
 ---
 
-## Chat
+## AI Assitance
 
-Answer questions using uploaded document context.
+Answer questions about the current document
+Answer questions about all uploaded contracts
+Compare contracts
+Explain recommendations
+Summarize contracts
+Retrieve stored metadata
+Generate business insights
 
 ---
+
+
+
 
 # 15. Sprint Plan
 
@@ -511,42 +577,43 @@ Answer questions using uploaded document context.
 - [x] Display Extracted Text
 
 ---
-
 ## Sprint 3
 
+- [ ] Backend Refactoring
+- [ ] SQLite Integration
 - [ ] Gemini Integration
 - [ ] Executive Summary
 - [ ] Metadata Extraction
+- [ ] Risk Detection
+- [ ] AI Recommendations
+- [ ] Store AI Analysis in SQLite
 - [ ] Display AI Analysis
 
 ---
 
 ## Sprint 4
 
-- [ ] SQLite Integration
-- [ ] Dashboard
-- [ ] Document List
+- [ ] AI Assistant
+- [ ] Document Chat
+- [ ] Repository Queries
+- [ ] Document Details Page
 
 ---
 
 ## Sprint 5
 
-- [ ] AI Chat
+- [ ] Dashboard
+- [ ] Document List
+- [ ] Search & Filters
 
 ---
 
 ## Sprint 6
 
-- [ ] Risk Detection
-- [ ] Recommendations
-
----
-
-## Sprint 7
-
 - [ ] UI Polish
 - [ ] Deployment
 - [ ] Demo Preparation
+
 
 ---
 
@@ -616,6 +683,12 @@ Platform positioning is stronger while implementation remains focused.
 
 ---
 
+## Decision #5
+
+Before starting sprint 3 the blueprint was updated to incorporate AI assistance on the whole repository of documents rather than just 1 document.
+
+---
+
 # 18. Future Enhancements
 
 - Cloud Storage
@@ -628,6 +701,12 @@ Platform positioning is stronger while implementation remains focused.
 - Multi-Agent Architecture
 - Procurement Intelligence
 - Compliance Intelligence
+- Repository-wide semantic search (RAG)
+- Clause similarity search
+- Multi-document reasoning
+- Vector database integration
+- Agentic workflows
+- Workflow automation
 
 ---
 

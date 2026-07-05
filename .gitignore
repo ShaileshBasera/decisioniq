@@ -3,6 +3,12 @@ venv/
 __pycache__/
 *.pyc
 
+# Database
+*.db
+
+# Uploads
+uploads/
+
 # Node
 node_modules/
 dist/
