@@ -74,3 +74,82 @@ def save_analysis(document_id, analysis):
 
     conn.commit()
     conn.close()
+
+def get_all_documents():
+    conn = get_connection()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT id, filename, summary
+        FROM documents
+        ORDER BY id DESC
+    """)
+
+    documents = [dict(row) for row in cursor.fetchall()]
+
+    conn.close()
+
+    return documents
+
+
+def get_document(document_id):
+    conn = get_connection()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM documents
+        WHERE id = ?
+        """,
+        (document_id,),
+    )
+
+    row = cursor.fetchone()
+
+    conn.close()
+
+    if row is None:
+        return None
+
+    document = dict(row)
+
+    document["metadata"] = json.loads(document["metadata"] or "{}")
+    document["risks"] = json.loads(document["risks"] or "[]")
+    document["recommendations"] = json.loads(
+        document["recommendations"] or "[]"
+    )
+
+    return document
+
+def get_all_documents_full():
+    conn = get_connection()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM documents
+        ORDER BY id DESC
+    """)
+
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    documents = []
+
+    for row in rows:
+        doc = dict(row)
+
+        doc["metadata"] = json.loads(doc["metadata"] or "{}")
+        doc["risks"] = json.loads(doc["risks"] or "[]")
+        doc["recommendations"] = json.loads(
+            doc["recommendations"] or "[]"
+        )
+
+        documents.append(doc)
+
+    return documents

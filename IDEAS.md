@@ -87,3 +87,13 @@ The extracted table data should be converted into structured JSON so that AI can
 - Identify unusual commercial terms.
 
 This capability can become a major differentiator for DecisionIQ.
+
+## Suggestion for portfolio
+
+If your goal is to create a strong portfolio project for AI consulting and GenAI engineering roles, I would actually add a small Sprint 7 (2–3 hours) after deployment:
+
+Add loading skeletons and polished error states.
+Improve empty states and success messages.
+Add sample documents and a one-click demo dataset.
+Create a polished README with screenshots and architecture.
+Record a 2–3 minute demo video.

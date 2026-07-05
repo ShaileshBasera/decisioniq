@@ -1,8 +1,21 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
-from database import initialize_database, save_document, save_analysis
-from ai import analyze_document
+from database import (
+    initialize_database,
+    save_document,
+    save_analysis,
+    get_all_documents,
+    get_document,
+    get_all_documents_full,
+)
+
+from ai import (
+    analyze_document,
+    answer_question,
+    answer_repository_question,
+)
+from pydantic import BaseModel
 
 import shutil
 
@@ -26,6 +39,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+class ChatRequest(BaseModel):
+    question: str
+
+class RepositoryChatRequest(BaseModel):
+    question: str
 
 @app.get("/")
 def home():
@@ -59,4 +77,71 @@ async def upload_document(file: UploadFile = File(...)):
         "metadata": analysis["metadata"],
         "risks": analysis["risks"],
         "recommendations": analysis["recommendations"]
+    }
+
+@app.get("/documents")
+def list_documents():
+    return get_all_documents()
+
+
+@app.get("/documents/{document_id}")
+def document_details(document_id: int):
+    document = get_document(document_id)
+
+    if document is None:
+        return {"error": "Document not found"}
+
+    return document
+
+@app.post("/documents/{document_id}/chat")
+def chat_with_document(document_id: int, request: ChatRequest):
+
+    document = get_document(document_id)
+
+    if document is None:
+        return {
+            "error": "Document not found"
+        }
+
+    answer = answer_question(
+        request.question,
+        document,
+    )
+
+    return {
+        "answer": answer
+    }
+
+@app.post("/repository/chat")
+def repository_chat(request: RepositoryChatRequest):
+
+    documents = get_all_documents_full()
+
+    if len(documents) == 0:
+        return {
+            "answer": "No documents have been uploaded yet."
+        }
+
+    # Remove raw_text to reduce prompt size
+    repository = []
+
+    for doc in documents:
+        repository.append(
+            {
+                "id": doc["id"],
+                "filename": doc["filename"],
+                "summary": doc["summary"],
+                "metadata": doc["metadata"],
+                "risks": doc["risks"],
+                "recommendations": doc["recommendations"],
+            }
+        )
+
+    answer = answer_repository_question(
+        request.question,
+        repository,
+    )
+
+    return {
+        "answer": answer
     }

@@ -59,3 +59,78 @@ Contract:
     )
 
     return json.loads(response.text)
+
+def answer_question(question, document):
+    prompt = f"""
+You are an expert commercial contract analyst.
+
+Answer the user's question using ONLY the information from the contract below.
+
+If the answer cannot be determined from the contract, say:
+"I couldn't find that information in this contract."
+
+Contract Summary:
+{document["summary"]}
+
+Metadata:
+{json.dumps(document["metadata"], indent=2)}
+
+Risks:
+{json.dumps(document["risks"], indent=2)}
+
+Recommendations:
+{json.dumps(document["recommendations"], indent=2)}
+
+Full Contract:
+{document["raw_text"]}
+
+User Question:
+{question}
+
+Respond in plain English.
+Do not use markdown.
+Keep the answer concise.
+"""
+
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            temperature=0.2,
+        ),
+    )
+
+    return response.text
+
+
+def answer_repository_question(question, documents):
+
+    prompt = f"""
+You are an enterprise contract intelligence assistant.
+
+Below is the organization's contract repository.
+
+{json.dumps(documents, indent=2)}
+
+Answer the user's question using ALL contracts.
+
+If comparison is required, compare them.
+
+If filtering is required, filter them.
+
+Be concise.
+
+Question:
+
+{question}
+"""
+
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            temperature=0.2,
+        ),
+    )
+
+    return response.text

@@ -1,8 +1,8 @@
 # DecisionIQ - Project Blueprint
 
-> **Version:** 1.3
+> **Version:** 1.4
 > **Status:** In Development
-> **Last Updated:** Sprint 2
+> **Last Updated:** Sprint 3
 
 ---
 
@@ -10,9 +10,9 @@
 
 **Project Status:** In Development
 
-**Current Sprint:** Sprint 3 - AI Document understanding
+**Current Sprint:** Sprint 4 - AI Assistant
 
-**Overall Progress:** 30%
+**Overall Progress:** 50%
 
 ## Completed
 
@@ -24,22 +24,24 @@
 - [x] Frontend ↔ Backend Connection
 - [x] Document Upload
 - [x] PDF Text Extraction
-- [ ] Gemini Integration
-- [ ] SQLite Integration
+- [x] Gemini Integration (Vertex AI)
+- [x] SQLite Integration
+- [x] Executive Summary
+- [x] Metadata Extraction
+- [x] Risk Detection
+- [x] AI Recommendations
 - [ ] Dashboard
 - [ ] Document Details Page
 - [ ] AI Chat
-- [ ] Risk Detection
-- [ ] Recommendations
 - [ ] Deployment
 
 ## Current Task
 
-Integrate Google Gemini to analyze extracted contract text and generate AI-powered insights.
+Build the Document Details page and AI Assistant capable of answering questions about uploaded contracts.
 
 ## Next Task
 
-Generate executive summaries and extract key contract metadata using Gemini.
+Implement document-level AI chat followed by repository-wide contract queries.
 
 ---
 
@@ -367,7 +369,7 @@ This architecture allows DecisionIQ to combine structured database queries with 
 
 ## AI
 
-- Google Gemini API
+- Google Gemini 2.5 Flash (Vertex AI)
 
 ## Database
 
@@ -488,14 +490,11 @@ Allows users to ask questions about uploaded documents.
 |--------|------|
 | id | Integer |
 | filename | Text |
-| file_type | Text |
-| page_count | Integer |
 | raw_text | Text |
 | summary | Text |
 | metadata | JSON |
 | risks | JSON |
 | recommendations | JSON |
-| uploaded_at | DateTime |
 
 ---
 
@@ -577,17 +576,18 @@ Generate business insights
 - [x] Display Extracted Text
 
 ---
+
 ## Sprint 3
 
-- [ ] Backend Refactoring
-- [ ] SQLite Integration
-- [ ] Gemini Integration
-- [ ] Executive Summary
-- [ ] Metadata Extraction
-- [ ] Risk Detection
-- [ ] AI Recommendations
-- [ ] Store AI Analysis in SQLite
-- [ ] Display AI Analysis
+- [x] Backend Refactoring
+- [x] SQLite Integration
+- [x] Gemini Integration (Vertex AI)
+- [x] Executive Summary
+- [x] Metadata Extraction
+- [x] Risk Detection
+- [x] AI Recommendations
+- [x] Store AI Analysis in SQLite
+- [x] Display AI Analysis
 
 ---
 
@@ -807,11 +807,59 @@ Completed
 
 DecisionIQ can now upload contracts, store them, extract their contents, and display the extracted text to the user. The application now has a complete document ingestion pipeline.
 
+## Sprint 3
+
+### Status
+
+Completed
+
+### Work Done
+
+- Refactored backend into parser.py, ai.py and database.py.
+- Integrated Vertex AI Gemini 2.5 Flash.
+- Implemented AI-powered contract analysis.
+- Generated structured JSON responses.
+- Extracted executive summary, metadata, risks and recommendations.
+- Integrated SQLite for document and AI analysis storage.
+- Added upload progress indicator.
+- Replaced extracted text view with AI analysis cards.
+
+### Lessons
+
+- Learned Vertex AI authentication using Application Default Credentials (ADC).
+- Learned structured prompting to obtain JSON responses from Gemini.
+- Learned how to store JSON in SQLite.
+- Understood how to separate parsing, AI and persistence into modular components.
+
+### Outcome
+
+DecisionIQ can now analyze uploaded contracts using Vertex AI, store AI-generated insights in SQLite and present structured business information through the web application.
+
 ---
 
 # 21. Lessons Learned
 
 This section will be updated throughout development.
+
+## Vertex AI
+
+### What is Vertex AI?
+
+Google Cloud's managed platform for building and deploying AI applications.
+
+### Why are we using it?
+
+- Enterprise-ready
+- Better integration with Google Cloud
+- Supports Gemini models
+- Easy deployment to Cloud Run
+
+### Key Learnings
+
+- Application Default Credentials (ADC)
+- Vertex AI authentication
+- Gemini 2.5 Flash integration
+- Structured JSON prompting
 
 ## Blueprint making
 
@@ -899,180 +947,12 @@ Key learnings.
 
 # 22. Next sprint plan
 
-# Sprint 3 Technical Improvements
-
-The following technical improvements have been identified at the end of Sprint 2 and should be incorporated while implementing AI capabilities.
-
-## 1. Backend Refactoring
-
-Current State
-
-The backend currently uses a single `main.py` file for API endpoints, file upload and PDF parsing.
-
-This was an intentional decision to keep Sprint 2 simple.
-
-Planned Improvement
-
-Refactor the backend into separate modules while keeping the implementation lightweight.
-
-Target Structure
-
-backend/
-
-├── main.py          # FastAPI endpoints
-├── parser.py        # PDF extraction logic
-├── ai.py            # Gemini integration
-├── uploads/
-└── venv/
-
-Responsibilities
-
-main.py
-
-- FastAPI application
-- API endpoints
-- Request/Response handling
-
-parser.py
-
-- PDF text extraction
-- Document parsing
-- Future support for DOCX and TXT
-
-ai.py
-
-- Gemini API integration
-- Prompt templates
-- AI response processing
-
----
-
-## 2. Preserve Page-Level Information
-
-Current State
-
-Sprint 2 extracts the complete document as one large text string.
-
-Limitation
-
-Once page boundaries are lost, it becomes difficult to:
-
-- Display page references
-- Show source citations
-- Highlight clauses
-- Support AI chat with references
-
-Planned Improvement
-
-Extract text page-by-page.
-
-Instead of
-
-{
-  "text": "Entire document..."
-}
-
-Return
-
-{
-  "pages": [
-    {
-      "page": 1,
-      "text": "..."
-    },
-    {
-      "page": 2,
-      "text": "..."
-    }
-  ]
-}
-
-This structure will later support:
-
-- Source citations
-- Clause highlighting
-- AI chat references
-- Page navigation
-
----
-
-## 3. Preserve Document Metadata
-
-Store basic metadata immediately after upload.
-
-Example
-
-{
-  "filename": "MSA.pdf",
-  "pages": 5,
-  "size": "420 KB",
-  "uploaded_at": "...",
-  "text": "..."
-}
-
-This metadata will later be used for:
-
-- Dashboard
-- Document List
-- Search
-- Analytics
-
----
-
-## 4. Replace Raw Text with AI Analysis
-
-Sprint 2 displays the extracted text for validation purposes.
-
-Beginning in Sprint 3, the UI should evolve from a document parser into an AI analysis dashboard.
-
-Current
-
-Upload
-↓
-
-Extract Text
-↓
-
-Display Raw Text
-
-Target
-
-Upload
-↓
-
-Extract Text
-↓
-
-Gemini
-↓
-
-Executive Summary
-
-↓
-
-Metadata Cards
-
-↓
-
-View Full Extracted Text (optional)
-
-The extracted text should remain available but should no longer be the primary user interface.
-
----
-
-## 5. Maintain Simplicity
-
-Although backend modularization is planned, avoid introducing unnecessary complexity such as:
-
-- LangGraph
-- Agent frameworks
-- Repository patterns
-- Service layers
-- Dependency injection frameworks
-
-DecisionIQ should continue following the project's architecture principles:
-
-- Build incrementally
-- Keep implementation understandable
-- Prefer working software over perfect architecture
-
+# Sprint 4 Plan
+
+## Objectives
+
+- Build Document Details page.
+- Display AI analysis from SQLite.
+- Implement document-level AI chat.
+- Build repository-wide AI assistant.
+- Introduce intent routing between SQLite and Gemini.
