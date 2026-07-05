@@ -1,8 +1,8 @@
 # DecisionIQ - Project Blueprint
 
-> **Version:** 1.2
+> **Version:** 1.3
 > **Status:** In Development
-> **Last Updated:** Sprint 1
+> **Last Updated:** Sprint 2
 
 ---
 
@@ -10,20 +10,20 @@
 
 **Project Status:** In Development
 
-**Current Sprint:** Sprint 2 - Document upload
+**Current Sprint:** Sprint 3 - AI Document understanding
 
-**Overall Progress:** 15%
+**Overall Progress:** 30%
 
 ## Completed
 
 - [x] Project Created
 - [x] Git Initialized
 - [x] React + Vite Setup
-- [ ] Tailwind CSS Setup
+- [x] Tailwind CSS Setup
 - [x] FastAPI Setup
 - [x] Frontend ↔ Backend Connection
-- [ ] Document Upload
-- [ ] PDF Text Extraction
+- [x] Document Upload
+- [x] PDF Text Extraction
 - [ ] Gemini Integration
 - [ ] SQLite Integration
 - [ ] Dashboard
@@ -35,11 +35,11 @@
 
 ## Current Task
 
-Build the Document Upload pipeline including PDF upload, parsing, and extracted text preview.
+Integrate Google Gemini to analyze extracted contract text and generate AI-powered insights.
 
 ## Next Task
 
-Build the Document Upload feature.
+Generate executive summaries and extract key contract metadata using Gemini.
 
 ---
 
@@ -493,20 +493,22 @@ Answer questions using uploaded document context.
 
 ## Sprint 1
 
-- [ ] Project Setup
-- [ ] React Setup
-- [ ] Tailwind Setup
-- [ ] FastAPI Setup
-- [ ] GitHub Repository
-- [ ] Frontend ↔ Backend Connection
+- [x] Project Setup
+- [x] React Setup
+- [x] FastAPI Setup
+- [x] GitHub Repository
+- [x] Frontend ↔ Backend Connection
 
 ---
 
 ## Sprint 2
 
-- [ ] Upload Document
-- [ ] Extract Text
-- [ ] Display Extracted Text
+- [x] Tailwind CSS Setup
+- [x] Upload Document
+- [x] Upload API
+- [x] Save Uploaded File
+- [x] Extract PDF Text
+- [x] Display Extracted Text
 
 ---
 
@@ -515,6 +517,7 @@ Answer questions using uploaded document context.
 - [ ] Gemini Integration
 - [ ] Executive Summary
 - [ ] Metadata Extraction
+- [ ] Display AI Analysis
 
 ---
 
@@ -696,6 +699,35 @@ Completed
 
 DecisionIQ is now a working full-stack application with React communicating successfully with FastAPI.
 
+## Sprint 2
+
+### Status
+
+Completed
+
+### Work Done
+
+- Configured Tailwind CSS.
+- Built the document upload interface.
+- Connected React frontend with FastAPI upload endpoint.
+- Implemented PDF upload functionality.
+- Stored uploaded documents locally.
+- Integrated PyMuPDF for PDF text extraction.
+- Displayed extracted text within the frontend.
+- Created sample commercial contracts for testing.
+
+### Lessons
+
+- Learned how multipart file uploads work between React and FastAPI.
+- Understood how FormData is used to upload files.
+- Learned how FastAPI handles uploaded files using UploadFile.
+- Learned the basics of PDF text extraction using PyMuPDF.
+- Understood how frontend and backend communicate during file uploads.
+
+### Outcome
+
+DecisionIQ can now upload contracts, store them, extract their contents, and display the extracted text to the user. The application now has a complete document ingestion pipeline.
+
 ---
 
 # 21. Lessons Learned
@@ -711,7 +743,50 @@ AI suggested to add Architecture Priciples during sprint 1. Next time I would li
 Rename different terminals as frontend, backend. to keep the work separate and not accidentally close them.
 
 
+## Tailwind CSS
+
+What is Tailwind CSS?
+
+A utility-first CSS framework used to rapidly build modern user interfaces.
+
+Why are we using it?
+
+- Faster UI development
+- Consistent styling
+- Minimal custom CSS
+
+Key Learnings
+
+- Tailwind integrates with Vite using the official plugin.
+- Styling is achieved through utility classes.
+- UI development becomes significantly faster.
+
+## PyMuPDF
+
+What is PyMuPDF?
+
+A Python library for reading and extracting text from PDF documents.
+
+Why are we using it?
+
+To convert uploaded contracts into machine-readable text before AI analysis.
+
+Key Learnings
+
+- PDFs can be processed page by page.
+- Text extraction is highly accurate for digitally generated PDFs.
+- Clean text extraction simplifies downstream AI processing.
+
 Example format
+
+## File Uploads
+
+What did I learn?
+
+- Uploading files from React using FormData.
+- Receiving uploaded files in FastAPI.
+- Saving uploaded files locally.
+- Returning structured JSON responses back to React.
 
 ## React
 
@@ -743,16 +818,182 @@ Key learnings.
 
 ---
 
-# 22. References
+# 22. Next sprint plan
 
-Useful documentation
+# Sprint 3 Technical Improvements
 
-- React Documentation
-- Vite Documentation
-- Tailwind CSS Documentation
-- FastAPI Documentation
-- Google AI Studio
-- Gemini API Documentation
-- PyMuPDF Documentation
+The following technical improvements have been identified at the end of Sprint 2 and should be incorporated while implementing AI capabilities.
 
-These references will be updated as new technologies are introduced during development.
+## 1. Backend Refactoring
+
+Current State
+
+The backend currently uses a single `main.py` file for API endpoints, file upload and PDF parsing.
+
+This was an intentional decision to keep Sprint 2 simple.
+
+Planned Improvement
+
+Refactor the backend into separate modules while keeping the implementation lightweight.
+
+Target Structure
+
+backend/
+
+├── main.py          # FastAPI endpoints
+├── parser.py        # PDF extraction logic
+├── ai.py            # Gemini integration
+├── uploads/
+└── venv/
+
+Responsibilities
+
+main.py
+
+- FastAPI application
+- API endpoints
+- Request/Response handling
+
+parser.py
+
+- PDF text extraction
+- Document parsing
+- Future support for DOCX and TXT
+
+ai.py
+
+- Gemini API integration
+- Prompt templates
+- AI response processing
+
+---
+
+## 2. Preserve Page-Level Information
+
+Current State
+
+Sprint 2 extracts the complete document as one large text string.
+
+Limitation
+
+Once page boundaries are lost, it becomes difficult to:
+
+- Display page references
+- Show source citations
+- Highlight clauses
+- Support AI chat with references
+
+Planned Improvement
+
+Extract text page-by-page.
+
+Instead of
+
+{
+  "text": "Entire document..."
+}
+
+Return
+
+{
+  "pages": [
+    {
+      "page": 1,
+      "text": "..."
+    },
+    {
+      "page": 2,
+      "text": "..."
+    }
+  ]
+}
+
+This structure will later support:
+
+- Source citations
+- Clause highlighting
+- AI chat references
+- Page navigation
+
+---
+
+## 3. Preserve Document Metadata
+
+Store basic metadata immediately after upload.
+
+Example
+
+{
+  "filename": "MSA.pdf",
+  "pages": 5,
+  "size": "420 KB",
+  "uploaded_at": "...",
+  "text": "..."
+}
+
+This metadata will later be used for:
+
+- Dashboard
+- Document List
+- Search
+- Analytics
+
+---
+
+## 4. Replace Raw Text with AI Analysis
+
+Sprint 2 displays the extracted text for validation purposes.
+
+Beginning in Sprint 3, the UI should evolve from a document parser into an AI analysis dashboard.
+
+Current
+
+Upload
+↓
+
+Extract Text
+↓
+
+Display Raw Text
+
+Target
+
+Upload
+↓
+
+Extract Text
+↓
+
+Gemini
+↓
+
+Executive Summary
+
+↓
+
+Metadata Cards
+
+↓
+
+View Full Extracted Text (optional)
+
+The extracted text should remain available but should no longer be the primary user interface.
+
+---
+
+## 5. Maintain Simplicity
+
+Although backend modularization is planned, avoid introducing unnecessary complexity such as:
+
+- LangGraph
+- Agent frameworks
+- Repository patterns
+- Service layers
+- Dependency injection frameworks
+
+DecisionIQ should continue following the project's architecture principles:
+
+- Build incrementally
+- Keep implementation understandable
+- Prefer working software over perfect architecture
+
