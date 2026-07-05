@@ -1,27 +1,27 @@
 # DecisionIQ - Project Blueprint
 
-> **Version:** 1.1
-> **Status:** Planning
-> **Last Updated:** Sprint 0
+> **Version:** 1.2
+> **Status:** In Development
+> **Last Updated:** Sprint 1
 
 ---
 
 # Current Status
 
-**Project Status:** Planning
+**Project Status:** In Development
 
-**Current Sprint:** Sprint 1 - Project Setup
+**Current Sprint:** Sprint 2 - Document upload
 
-**Overall Progress:** 0%
+**Overall Progress:** 15%
 
 ## Completed
 
-- [ ] Project Created
-- [ ] Git Initialized
-- [ ] React + Vite Setup
+- [x] Project Created
+- [x] Git Initialized
+- [x] React + Vite Setup
 - [ ] Tailwind CSS Setup
-- [ ] FastAPI Setup
-- [ ] Frontend ↔ Backend Connection
+- [x] FastAPI Setup
+- [x] Frontend ↔ Backend Connection
 - [ ] Document Upload
 - [ ] PDF Text Extraction
 - [ ] Gemini Integration
@@ -35,7 +35,7 @@
 
 ## Current Task
 
-Set up the project structure and development environment.
+Build the Document Upload pipeline including PDF upload, parsing, and extracted text preview.
 
 ## Next Task
 
@@ -94,7 +94,61 @@ The application should be
 
 ---
 
-# 4. MVP Scope
+# 4. Architecture Principles
+
+The project follows these architectural principles.
+
+### 1. Keep it Simple
+
+The project is being developed as a first full-stack AI application.
+
+Solutions should prioritize readability and learning over unnecessary abstraction.
+
+---
+
+### 2. Build Incrementally
+
+Each sprint should produce a working application.
+
+No feature should break existing functionality.
+
+---
+
+### 3. Separate Responsibilities
+
+Frontend
+
+- User Interface
+
+Backend
+
+- Business Logic
+
+AI
+
+- Analysis and Recommendations
+
+Database
+
+- Storage
+
+---
+
+### 4. Delay Complexity
+
+Files, libraries and services are introduced only when they become necessary.
+
+Avoid premature optimization.
+
+### 5. Learn while building
+
+This project is not only a hackathon submission but also a learning journey.
+
+Design decisions should favor understanding and long-term maintainability over short-term shortcuts.
+
+---
+
+# 5. MVP Scope
 
 ## Document Management
 
@@ -149,7 +203,7 @@ The application should be
 
 ---
 
-# 5. User Journey
+# 6. User Journey
 
 ```
 User opens application
@@ -197,7 +251,7 @@ AI recommends actions
 
 ---
 
-# 6. Solution Architecture
+# 7. Solution Architecture
 
 ```
                     User
@@ -245,7 +299,7 @@ AI recommends actions
 
 ---
 
-# 7. Technology Stack
+# 8. Technology Stack
 
 ## Frontend
 
@@ -276,7 +330,7 @@ AI recommends actions
 
 ---
 
-# 8. Project Structure
+# 9. Project Structure
 
 ```
 decisioniq/
@@ -304,7 +358,22 @@ decisioniq/
 
 ---
 
-# 9. Application Screens
+# 10. Backend Architecture
+
+The backend follows a modular structure. Files will only be created when required by the project to avoid unnecessary complexity.
+
+| File | Purpose |
+|------|---------|
+| main.py | Starts the FastAPI application |
+| routes.py | API endpoints |
+| ai.py | Gemini API integration |
+| parser.py | PDF/DOCX/TXT extraction |
+| database.py | SQLite operations |
+| models.py | Shared data models |
+| utils.py | Helper functions |
+| uploads/ | Uploaded documents |
+
+# 11. Application Screens
 
 ## Dashboard
 
@@ -345,7 +414,7 @@ Allows users to ask questions about uploaded documents.
 
 ---
 
-# 10. Backend APIs
+# 12. Backend APIs
 
 | Method | Endpoint | Purpose |
 |---------|----------|----------|
@@ -357,7 +426,7 @@ Allows users to ask questions about uploaded documents.
 
 ---
 
-# 11. Database Design
+# 13. Database Design
 
 ## documents
 
@@ -373,7 +442,7 @@ Allows users to ask questions about uploaded documents.
 
 ---
 
-# 12. AI Capabilities
+# 14. AI Capabilities
 
 ## Summary
 
@@ -420,7 +489,7 @@ Answer questions using uploaded document context.
 
 ---
 
-# 13. Sprint Plan
+# 15. Sprint Plan
 
 ## Sprint 1
 
@@ -478,7 +547,7 @@ Answer questions using uploaded document context.
 
 ---
 
-# 14. Design Principles
+# 16. Design Principles
 
 The project should always follow these principles.
 
@@ -492,7 +561,7 @@ The project should always follow these principles.
 
 ---
 
-# 15. Decisions Log
+# 17. Decisions Log
 
 ## Decision #1
 
@@ -544,7 +613,7 @@ Platform positioning is stronger while implementation remains focused.
 
 ---
 
-# 16. Future Enhancements
+# 18. Future Enhancements
 
 - Cloud Storage
 - User Authentication
@@ -559,7 +628,7 @@ Platform positioning is stronger while implementation remains focused.
 
 ---
 
-# 17. Definition of Success
+# 19. Definition of Success
 
 The MVP is complete when a user can
 
@@ -575,7 +644,7 @@ The MVP is complete when a user can
 
 ---
 
-# 18. Development Log
+# 20. Development Log
 
 ---
 
@@ -601,11 +670,46 @@ The project will prioritize simplicity while following good engineering practice
 
 Every sprint should result in a working application.
 
+## Sprint 1
+
+### Status
+
+Completed
+
+### Work Done
+
+- Created GitHub repository.
+- Initialized React application using Vite.
+- Created FastAPI backend.
+- Configured Python virtual environment.
+- Implemented first API endpoint.
+- Connected React frontend with FastAPI backend.
+- Configured CORS for frontend-backend communication.
+
+### Lessons
+
+- Learned the purpose of virtual environments.
+- Understood how React communicates with a backend using HTTP requests.
+- Learned why CORS is required during local development.
+
+### Outcome
+
+DecisionIQ is now a working full-stack application with React communicating successfully with FastAPI.
+
 ---
 
-# 19. Lessons Learned
+# 21. Lessons Learned
 
 This section will be updated throughout development.
+
+## Blueprint making
+
+AI suggested to add Architecture Priciples during sprint 1. Next time I would like to do this in sprint 0.
+
+## VS Code
+
+Rename different terminals as frontend, backend. to keep the work separate and not accidentally close them.
+
 
 Example format
 
@@ -639,7 +743,7 @@ Key learnings.
 
 ---
 
-# 20. References
+# 22. References
 
 Useful documentation
 
