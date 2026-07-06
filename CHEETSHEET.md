@@ -21,3 +21,8 @@ npm install <package>
 
 # Install backend package
 pip install <package>
+
+# List files and folders in terminal
+ls
+ls backend
+ls frontend
