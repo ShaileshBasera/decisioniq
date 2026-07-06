@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-function DocumentTable({ documents }) {
+function DocumentTable({ documents, onDelete }) {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden min-h-[320px]">
       <div className="px-6 py-4 border-b">
@@ -56,13 +56,20 @@ function DocumentTable({ documents }) {
                   )}
                 </td>
 
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 space-x-4">
                   <Link
                     to={`/documents/${doc.id}`}
                     className="text-indigo-600 hover:underline"
                   >
                     View Details
                   </Link>
+
+                  <button
+                    onClick={() => onDelete(doc.id)}
+                    className="text-red-600 hover:underline"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))

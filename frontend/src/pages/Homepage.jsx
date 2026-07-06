@@ -7,7 +7,10 @@ import DocumentTable from "../components/DocumentTable";
 import RepositoryCard from "../components/RepositoryCard";
 import UploadCard from "../components/UploadCard";
 
-import { getDocuments } from "../services/documentService";
+import {
+  getDocuments,
+  deleteDocument,
+} from "../services/documentService";
 
 function HomePage() {
   const [documents, setDocuments] = useState([]);
@@ -26,6 +29,25 @@ function HomePage() {
     }
   }
 
+  async function handleDelete(documentId) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this document?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await deleteDocument(documentId);
+
+      setDocuments((prevDocuments) =>
+        prevDocuments.filter((doc) => doc.id !== documentId)
+      );
+    } catch (error) {
+      console.error("Failed to delete document:", error);
+      alert("Failed to delete document.");
+    }
+  }
+
   const filteredDocuments = documents.filter((doc) => {
     const search = searchTerm.toLowerCase();
 
@@ -40,7 +62,6 @@ function HomePage() {
       <Header />
 
       <main className="max-w-7xl mx-auto px-6 py-10">
-        {/* Title */}
         <section className="mb-8">
           <h1 className="text-4xl font-bold text-slate-900">
             Repository Dashboard
@@ -52,12 +73,10 @@ function HomePage() {
           </p>
         </section>
 
-        {/* Statistics */}
         <section className="mb-8">
           <StatsCards documents={documents} />
         </section>
 
-        {/* Search */}
         <section className="mb-8">
           <SearchBar
             searchTerm={searchTerm}
@@ -65,16 +84,17 @@ function HomePage() {
           />
         </section>
 
-        {/* Repository + AI */}
         <section className="grid lg:grid-cols-3 gap-6 mb-10">
           <div className="lg:col-span-2">
-            <DocumentTable documents={filteredDocuments} />
+            <DocumentTable
+              documents={filteredDocuments}
+              onDelete={handleDelete}
+            />
           </div>
 
           <RepositoryCard />
         </section>
 
-        {/* Upload */}
         <section>
           <UploadCard />
         </section>

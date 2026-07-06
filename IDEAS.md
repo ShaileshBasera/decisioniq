@@ -2,6 +2,30 @@
 
 ---
 
+## Switching between dev and prod
+
+In the next sprint, I'd like to replace this with Vite environment variables:
+
+.env.development
+
+VITE_API_URL=http://localhost:8000
+
+.env.production
+
+VITE_API_URL=https://decisioniq-api-873340953226.asia-south1.run.app
+
+Then api.js becomes:
+
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
+
+export default api;
+
+From then on, you'll never have to edit api.js again—npm run dev will automatically use the local backend, and npm run build will automatically use the production backend. It's a small improvement that makes development much smoother.
+
 ## Better Table Extraction
 
 ### Problem
@@ -97,3 +121,4 @@ Improve empty states and success messages.
 Add sample documents and a one-click demo dataset.
 Create a polished README with screenshots and architecture.
 Record a 2–3 minute demo video.
+

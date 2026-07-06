@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import api from "../services/api";
 
 function DocumentDetails() {
   const { id } = useParams();
@@ -12,16 +13,18 @@ function DocumentDetails() {
   const [asking, setAsking] = useState(false);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/documents/${id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setDocument(data);
-        setLoading(false);
-      })
-      .catch((error) => {
+    async function loadDocument() {
+      try {
+        const response = await api.get(`/documents/${id}`);
+        setDocument(response.data);
+      } catch (error) {
         console.error(error);
+      } finally {
         setLoading(false);
-      });
+      }
+    }
+
+    loadDocument();
   }, [id]);
 
   const askAI = async () => {
@@ -30,22 +33,14 @@ function DocumentDetails() {
     setAsking(true);
 
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/documents/${id}/chat`,
+      const response = await api.post(
+        `/documents/${id}/chat`,
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            question: question,
-          }),
+          question,
         }
       );
 
-      const data = await response.json();
-
-      setAnswer(data.answer);
+      setAnswer(response.data.answer);
     } catch (error) {
       console.error(error);
       setAnswer("Something went wrong.");

@@ -8,6 +8,7 @@ from database import (
     get_all_documents,
     get_document,
     get_all_documents_full,
+    delete_document,
 )
 
 from ai import (
@@ -42,11 +43,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 class ChatRequest(BaseModel):
     question: str
 
+
 class RepositoryChatRequest(BaseModel):
     question: str
+
 
 @app.get("/")
 def home():
@@ -67,7 +71,7 @@ async def upload_document(file: UploadFile = File(...)):
     extracted_text = extract_pdf_text(file_path)
 
     analysis = analyze_document(extracted_text)
-    
+
     document_id = save_document(file.filename, extracted_text)
 
     save_analysis(document_id, analysis)
@@ -82,6 +86,7 @@ async def upload_document(file: UploadFile = File(...)):
         "recommendations": analysis["recommendations"]
     }
 
+
 @app.get("/documents")
 def list_documents():
     return get_all_documents()
@@ -95,6 +100,22 @@ def document_details(document_id: int):
         return {"error": "Document not found"}
 
     return document
+
+
+@app.delete("/documents/{document_id}")
+def delete_document_endpoint(document_id: int):
+
+    deleted = delete_document(document_id)
+
+    if not deleted:
+        return {
+            "error": "Document not found"
+        }
+
+    return {
+        "message": "Document deleted successfully"
+    }
+
 
 @app.post("/documents/{document_id}/chat")
 def chat_with_document(document_id: int, request: ChatRequest):
@@ -114,6 +135,7 @@ def chat_with_document(document_id: int, request: ChatRequest):
     return {
         "answer": answer
     }
+
 
 @app.post("/repository/chat")
 def repository_chat(request: RepositoryChatRequest):

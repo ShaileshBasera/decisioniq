@@ -171,3 +171,23 @@ def get_all_documents_full():
         documents.append(doc)
 
     return documents
+
+def delete_document(document_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        DELETE FROM documents
+        WHERE id = ?
+        """,
+        (document_id,),
+    )
+
+    conn.commit()
+
+    deleted = cursor.rowcount > 0
+
+    conn.close()
+
+    return deleted

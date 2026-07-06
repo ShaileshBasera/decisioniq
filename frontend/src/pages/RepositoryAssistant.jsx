@@ -1,36 +1,25 @@
 import { useState } from "react";
+import api from "../services/api";
 
 function RepositoryAssistant() {
-
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
 
   const askRepository = async () => {
-
     if (!question.trim()) return;
 
     setLoading(true);
 
     try {
-
-      const response = await fetch(
-        "http://127.0.0.1:8000/repository/chat",
+      const response = await api.post(
+        "/repository/chat",
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            question,
-          }),
+          question,
         }
       );
 
-      const data = await response.json();
-
-      setAnswer(data.answer);
-
+      setAnswer(response.data.answer);
     } catch (error) {
       console.error(error);
       setAnswer("Something went wrong.");
@@ -41,11 +30,8 @@ function RepositoryAssistant() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-
       <div className="max-w-5xl mx-auto p-8">
-
         <div className="bg-white rounded-xl shadow p-8">
-
           <h1 className="text-3xl font-bold mb-2">
             🤖 Repository AI Assistant
           </h1>
@@ -81,11 +67,8 @@ function RepositoryAssistant() {
               </p>
             </div>
           )}
-
         </div>
-
       </div>
-
     </div>
   );
 }
