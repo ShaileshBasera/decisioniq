@@ -75,20 +75,37 @@ def save_analysis(document_id, analysis):
     conn.commit()
     conn.close()
 
+
 def get_all_documents():
     conn = get_connection()
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT id, filename, summary
+        SELECT
+            id,
+            filename,
+            summary,
+            risks,
+            recommendations
         FROM documents
         ORDER BY id DESC
     """)
 
-    documents = [dict(row) for row in cursor.fetchall()]
-
+    rows = cursor.fetchall()
     conn.close()
+
+    documents = []
+
+    for row in rows:
+        doc = dict(row)
+
+        doc["risks"] = json.loads(doc["risks"] or "[]")
+        doc["recommendations"] = json.loads(
+            doc["recommendations"] or "[]"
+        )
+
+        documents.append(doc)
 
     return documents
 
@@ -123,6 +140,7 @@ def get_document(document_id):
     )
 
     return document
+
 
 def get_all_documents_full():
     conn = get_connection()

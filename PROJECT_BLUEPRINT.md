@@ -1,8 +1,8 @@
 # DecisionIQ - Project Blueprint
 
-> **Version:** 1.4
+> **Version:** 1.6
 > **Status:** In Development
-> **Last Updated:** Sprint 3
+> **Last Updated:** Sprint 5
 
 ---
 
@@ -10,9 +10,9 @@
 
 **Project Status:** In Development
 
-**Current Sprint:** Sprint 4 - AI Assistant
+**Current Sprint:** Sprint 6 - Deployment
 
-**Overall Progress:** 50%
+**Overall Progress:** 85%
 
 ## Completed
 
@@ -30,18 +30,22 @@
 - [x] Metadata Extraction
 - [x] Risk Detection
 - [x] AI Recommendations
-- [ ] Dashboard
-- [ ] Document Details Page
-- [ ] AI Chat
+- [x] Document Details Page
+- [x] Document-level AI Chat
+- [x] Repository-wide AI Assistant
+- [x] Dashboard
+- [x] Document Repository
+- [x] Repository Statistics
+- [x] Search
 - [ ] Deployment
 
 ## Current Task
 
-Build the Document Details page and AI Assistant capable of answering questions about uploaded contracts.
+Deploy DecisionIQ to Google Cloud and prepare the MVP for demonstration.
 
 ## Next Task
 
-Implement document-level AI chat followed by repository-wide contract queries.
+Deploy the FastAPI backend and React frontend, configure production environment variables, and perform end-to-end testing.
 
 ---
 
@@ -435,11 +439,11 @@ The backend follows a modular structure. Files will only be created when require
 
 Displays
 
-- Documents Uploaded
-- High Risk Contracts
-- Expiring Soon
-- AI Recommendations
-- Recent Uploads
+- Executive Summary
+- Metadata
+- Risks
+- Recommendations
+- AI Chat
 
 ---
 
@@ -464,9 +468,9 @@ Displays
 
 ---
 
-## AI Chat
+## Repository AI Assistant
 
-Allows users to ask questions about uploaded documents.
+Allows users to ask questions across all uploaded contracts.
 
 ---
 
@@ -477,8 +481,9 @@ Allows users to ask questions about uploaded documents.
 | POST | /upload | Upload document |
 | GET | /documents | List documents |
 | GET | /documents/{id} | Document details |
+| POST | /documents/{id}/chat | AI chat for a document |
+| POST | /repository/chat | Repository AI assistant |
 | DELETE | /documents/{id} | Delete document |
-| POST | /chat | AI Chat |
 
 ---
 
@@ -539,15 +544,24 @@ Example
 
 ---
 
-## AI Assitance
+## AI Assistance
 
-Answer questions about the current document
-Answer questions about all uploaded contracts
-Compare contracts
-Explain recommendations
-Summarize contracts
-Retrieve stored metadata
-Generate business insights
+### Document AI
+
+- Answer questions about the current contract
+- Explain risks
+- Explain recommendations
+- Summarize clauses
+
+### Repository AI
+
+- Search across uploaded contracts
+- Compare contracts
+- Compare payment terms
+- Compare risks
+- Generate portfolio insights
+- Summarize contract repository
+- Answer business questions
 
 ---
 
@@ -593,27 +607,35 @@ Generate business insights
 
 ## Sprint 4
 
-- [ ] AI Assistant
-- [ ] Document Chat
-- [ ] Repository Queries
-- [ ] Document Details Page
+- [x] Document Details Page
+- [x] Document Details API
+- [x] Document AI Chat
+- [x] Repository AI Backend
+- [x] Repository AI Frontend
+- [x] AI Prompt Optimization
 
 ---
 
 ## Sprint 5
 
-- [ ] Dashboard
-- [ ] Document List
-- [ ] Search & Filters
+- [x] Dashboard
+- [x] Repository Dashboard Layout
+- [x] Document Repository
+- [x] Repository Statistics
+- [x] Search
+- [x] Dashboard Refactoring
+- [ ] Filters
+- [ ] Delete Documents
 
 ---
 
 ## Sprint 6
 
-- [ ] UI Polish
-- [ ] Deployment
+- [ ] Backend Deployment
+- [ ] Frontend Deployment
+- [ ] Production Configuration
+- [ ] End-to-End Testing
 - [ ] Demo Preparation
-
 
 ---
 
@@ -687,6 +709,10 @@ Platform positioning is stronger while implementation remains focused.
 
 Before starting sprint 3 the blueprint was updated to incorporate AI assistance on the whole repository of documents rather than just 1 document.
 
+## Decision #6
+
+In sprint sprint 5 some UI enhancement feartures were deffered and we are going straight to deployment. UI polish task of sprint 6 is also removed.
+
 ---
 
 # 18. Future Enhancements
@@ -707,6 +733,9 @@ Before starting sprint 3 the blueprint was updated to incorporate AI assistance 
 - Vector database integration
 - Agentic workflows
 - Workflow automation
+- Delete
+- Filter
+- UI Polish
 
 ---
 
@@ -723,6 +752,7 @@ The MVP is complete when a user can
 - Navigate a professional dashboard
 - Run the application locally
 - Demonstrate it confidently
+- Access the application through a public URL.
 
 ---
 
@@ -835,11 +865,105 @@ Completed
 
 DecisionIQ can now analyze uploaded contracts using Vertex AI, store AI-generated insights in SQLite and present structured business information through the web application.
 
+## Sprint 4
+
+### Status
+
+Completed
+
+### Work Done
+
+- Added Document Details page.
+- Implemented GET /documents endpoint.
+- Implemented GET /documents/{id} endpoint.
+- Built professional contract details interface.
+- Implemented document-level AI chat using Gemini.
+- Added repository-wide AI assistant.
+- Added repository chat API.
+- Improved prompt engineering for document and repository reasoning.
+- Optimized repository prompts by excluding raw contract text.
+
+### Lessons
+
+- Learned React Router navigation.
+- Learned dynamic routing using URL parameters.
+- Learned Pydantic request models.
+- Learned prompt reuse across multiple AI workflows.
+- Learned how to build conversational AI on top of structured contract repositories.
+
+### Outcome
+
+DecisionIQ now supports conversational AI at both document and repository levels. Users can upload contracts, analyze them, explore structured insights, ask questions about individual contracts, and query the entire contract portfolio through a unified AI assistant.
+
+## Sprint 5
+
+### Status
+
+Completed
+
+### Work Done
+
+- Built a professional dashboard homepage.
+- Created repository overview with live statistics.
+- Added contract repository table.
+- Connected dashboard to the existing document APIs.
+- Implemented client-side search across uploaded contracts.
+- Refactored frontend state management to use a single shared document state.
+- Added repository AI panel to the dashboard.
+- Repositioned upload functionality within the dashboard workflow.
+- Improved dashboard layout and overall user experience.
+
+### Lessons
+
+- Learned React state lifting to avoid duplicate API calls.
+- Learned component communication through props.
+- Learned dashboard design patterns for enterprise web applications.
+- Improved frontend architecture by separating API services from UI components.
+
+### Outcome
+
+DecisionIQ now provides a centralized dashboard where users can view repository statistics, browse uploaded contracts, search the repository, navigate to document details, and access repository-wide AI assistance from a single interface.
+
 ---
 
 # 21. Lessons Learned
 
 This section will be updated throughout development.
+
+## React Router
+
+### What is React Router?
+
+A routing library for React applications.
+
+### Why are we using it?
+
+To support multiple application pages while maintaining a single-page application.
+
+### Key Learnings
+
+- BrowserRouter
+- Routes and Route
+- useParams
+- Page navigation
+
+## SQLite
+
+### What is SQLite?
+
+A lightweight relational database.
+
+### Why are we using it?
+
+To persist uploaded contracts and AI analysis.
+
+### Key Learnings
+
+- CRUD operations
+- JSON serialization
+- Retrieving structured AI outputs
+
+
 
 ## Vertex AI
 
@@ -947,12 +1071,13 @@ Key learnings.
 
 # 22. Next sprint plan
 
-# Sprint 4 Plan
+# Sprint 6 Plan
 
 ## Objectives
 
-- Build Document Details page.
-- Display AI analysis from SQLite.
-- Implement document-level AI chat.
-- Build repository-wide AI assistant.
-- Introduce intent routing between SQLite and Gemini.
+- Deploy FastAPI backend to Google Cloud Run.
+- Deploy React frontend.
+- Configure production API endpoints.
+- Validate Vertex AI integration in production.
+- Perform end-to-end testing.
+- Prepare the application for demonstration.
